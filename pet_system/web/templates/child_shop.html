@@ -47,9 +47,8 @@ async function load(){
   document.getElementById('cookieStock').textContent=s.cookie;
   const rc=s.recommend;
   if(rc&&rc.cost>0){
-    document.getElementById('reco').innerHTML='建议换：<b>'+rc.milk+' 牛奶 + '+rc.cookie+' 饼干</b>（'+rc.cost+' 积分）'+
-      (rc.need_points>0?'，还差 '+rc.need_points+' 积分':'');
-  }else document.getElementById('reco').innerHTML='食物够啦，快去喂宠物吧！';
+    document.getElementById('reco').innerHTML='帮你配好：<b>'+rc.milk+' 牛奶 + '+rc.cookie+' 饼干</b>，一次花掉 <b>'+rc.cost+'</b> 积分';
+  }else document.getElementById('reco').innerHTML='积分用完啦，或者食物快装不下咯～';
 }
 function step(k,d){
   if(k==='milk')milk=Math.max(0,Math.min(s.cap,milk+d));

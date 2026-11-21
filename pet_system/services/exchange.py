@@ -15,7 +15,7 @@ def shop_view(child_id):
     with transaction() as cur:
         state = store.load_state(cur, child_id)
         rate, cap = _settings(cur)
-        plan = recommend_exchange(state, rate)
+        plan = recommend_exchange(state, rate, cap)
     return {
         "points": state.points,
         "milk": state.stock.milk,

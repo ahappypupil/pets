@@ -1,8 +1,10 @@
 """规则引擎纯函数单测：不连数据库。运行：python -m unittest tests.test_rules"""
 import unittest
 from datetime import datetime
+from dataclasses import replace
 from pet_system.domain.rules import (form_of, is_graduation, can_claim,
-                                      can_exchange, can_feed, apply_feed, next_species)
+                                      can_exchange, can_feed, apply_feed, next_species,
+                                      recommend_exchange)
 from pet_system.domain.state import (Stock, GameState, PetInstance, PetSpecies, Award)
 
 
@@ -58,6 +60,46 @@ class TestExchange(unittest.TestCase):
 
     def test_stock_cap(self):
         self.assertFalse(can_exchange(make_state(points=100), 100, 0, 2, 99).ok)
+
+
+def reco_state(points, milk=0, cookie=0, fm=1, fc=1):
+    s = make_state(milk=milk, cookie=cookie, points=points)
+    return replace(s, species=replace(s.species, formula_milk=fm, formula_cookie=fc))
+
+
+class TestRecommendExchange(unittest.TestCase):
+    def test_spend_all_points(self):
+        p = recommend_exchange(reco_state(10), 2, 99)
+        self.assertEqual((p["milk"], p["cookie"], p["cost"]), (10, 10, 10))
+
+    def test_stock_cap_limits(self):
+        p = recommend_exchange(reco_state(100, fm=2, fc=1), 2, 5)
+        # 空间 (5,5)=10 份 → 最多花 5 积分；按比例 6/4 牛奶空间仅 5，溢出挪给饼干
+        self.assertEqual((p["milk"], p["cookie"], p["cost"]), (5, 5, 5))
+
+    def test_formula_ratio(self):
+        p = recommend_exchange(reco_state(10, fm=2, fc=1), 2, 99)
+        self.assertEqual((p["milk"], p["cookie"], p["cost"]), (13, 7, 10))
+
+    def test_existing_stock(self):
+        p = recommend_exchange(reco_state(10, milk=95, cookie=95), 2, 99)
+        self.assertEqual((p["milk"], p["cookie"], p["cost"]), (4, 4, 4))
+
+    def test_no_points(self):
+        p = recommend_exchange(reco_state(0), 2, 99)
+        self.assertEqual((p["milk"], p["cookie"], p["cost"]), (0, 0, 0))
+
+    def test_plan_passes_can_exchange(self):
+        for pts, milk, cookie, fm, fc, cap in [
+            (10, 0, 0, 1, 1, 99), (100, 90, 0, 3, 2, 99),
+            (7, 50, 50, 2, 1, 60), (1, 0, 0, 3, 3, 5),
+        ]:
+            s = reco_state(pts, milk, cookie, fm, fc)
+            p = recommend_exchange(s, 2, cap)
+            if p["cost"] > 0:
+                chk = can_exchange(s, p["milk"], p["cookie"], 2, cap)
+                self.assertTrue(chk.ok, chk.message)
+                self.assertEqual(chk.value, p["cost"])
 
 
 class TestFeed(unittest.TestCase):

@@ -48,19 +48,34 @@ def can_exchange(s, milk, cookie, rate, stock_cap):
     return Ok(cost)
 
 
-def recommend_exchange(s, rate):
-    """R10：按当前配方算还差多少，给出最省的兑换方案。"""
+def recommend_exchange(s, rate, stock_cap):
+    """R10：按当前配方比例，在库存上限内尽可能花光积分换食物。
+
+    可花积分 = min(积分余额, 剩余库存空间 // rate)，总份数必为 rate 的整数倍；
+    再按配方比例把份数分给牛奶/饼干，某一侧超出空间的部分挪给另一侧。
+    返回的方案满足 can_exchange 的全部约束。
+    """
     if not s.species or not s.pet:
         return None
-    need_milk = max(0, s.species.formula_milk - s.stock.milk)
-    need_cookie = max(0, s.species.formula_cookie - s.stock.cookie)
-    total = need_milk + need_cookie
-    if total == 0:
+    rate = max(1, rate)
+    fm, fc = s.species.formula_milk, s.species.formula_cookie
+    room_milk = max(0, stock_cap - s.stock.milk)
+    room_cookie = max(0, stock_cap - s.stock.cookie)
+    # 积分余额与库存空间双重约束下的最大可花积分
+    cost = min(s.points, (room_milk + room_cookie) // rate)
+    total = cost * rate
+    if total <= 0:
         return {"milk": 0, "cookie": 0, "cost": 0, "need_points": 0}
-    # 向上凑到 rate 的整数倍
-    cost = (total + rate - 1) // rate
-    return {"milk": need_milk, "cookie": need_cookie,
-            "cost": cost, "need_points": max(0, cost - s.points)}
+    milk = total * fm // (fm + fc)
+    cookie = total - milk
+    # 收敛到各自剩余空间：total <= 空间总和，故溢出只可能有一侧且不会丢份数
+    if milk > room_milk:
+        cookie += milk - room_milk
+        milk = room_milk
+    if cookie > room_cookie:
+        milk += cookie - room_cookie
+        cookie = room_cookie
+    return {"milk": milk, "cookie": cookie, "cost": cost, "need_points": 0}
 
 
 # ---- R11 喂食校验 ----
