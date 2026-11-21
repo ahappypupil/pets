@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/kids.css') }}">
 </head>
 <body class="parent-page">
-<nav class="topnav" style="height:60px">
+<nav class="topnav parent-topnav">
   <a href="{{ url_for('parent.dashboard') }}" class="navbtn small">📊 总览</a>
   <a href="{{ url_for('parent.pending_page') }}" class="navbtn small">✅ 待确认</a>
   <a href="{{ url_for('parent.awards_page') }}" class="navbtn small">🏆 奖项管理</a>

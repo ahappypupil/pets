@@ -33,10 +33,10 @@ async function load(){
     const v=cfg[k].value;
     const val=displayValue(k,v);
     const desc=cfg[k].description||'';
-    return '<div style="display:flex;align-items:center;gap:12px;margin:10px 0;font-size:16px">'+
-      '<b style="width:180px">'+k+'</b>'+
-      '<input class="pinput" style="max-width:220px" value="'+String(val).replace(/"/g,'&quot;')+'" data-k="'+k+'" >'+
-      '<span style="color:#A0AEC0">'+desc+'</span>'+
+    return '<div class="cfg-row">'+
+      '<b>'+k+'</b>'+
+      '<input class="pinput" value="'+String(val).replace(/"/g,'&quot;')+'" data-k="'+k+'" >'+
+      '<span>'+desc+'</span>'+
       '<button class="pbtn" onclick="save(\''+k+'\')">保存</button></div>';
   }).join('');
 }
