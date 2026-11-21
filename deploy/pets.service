@@ -1,0 +1,22 @@
+[Unit]
+Description=Kids Pet System (gunicorn)
+After=network.target mysql.service
+
+[Service]
+Type=simple
+User=pets
+Group=pets
+WorkingDirectory=/opt/pets
+Environment="PATH=/opt/pets/venv/bin:/usr/local/bin:/usr/bin:/bin"
+ExecStart=/opt/pets/venv/bin/gunicorn \
+    --workers 2 \
+    --bind 127.0.0.1:8000 \
+    --access-logfile /var/log/pets/access.log \
+    --error-logfile /var/log/pets/error.log \
+    --timeout 60 \
+    app:app
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

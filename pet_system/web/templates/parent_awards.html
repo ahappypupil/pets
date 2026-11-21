@@ -1,0 +1,32 @@
+{% extends "parent_base.html" %}
+{% block title %}奖项管理{% endblock %}
+{% block content %}
+<h1>🏆 奖项管理（改完即时生效）</h1>
+<div class="parent-card">
+  <table><thead><tr><th>奖项</th><th>积分</th><th>每日上限</th><th>需确认</th><th>启用</th><th>排序</th><th></th></tr></thead>
+  <tbody id="rows"></tbody></table>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+let awards=[];
+async function load(){
+  const r=await Pet.api('/parent/api/awards');awards=r.data;
+  document.getElementById('rows').innerHTML=awards.map((a,i)=>
+    '<tr><td><input class="pinput" value="'+a.name+'" onchange="setf('+i+',\'name\',this.value)"></td>'+
+    '<td><input class="pinput" type="number" value="'+a.points+'" onchange="setf('+i+',\'points\',+this.value)"></td>'+
+    '<td><input class="pinput" type="number" value="'+a.daily_cap+'" onchange="setf('+i+',\'daily_cap\',+this.value)"></td>'+
+    '<td><input type="checkbox" '+(a.need_approval?'checked':'')+' onchange="setf('+i+',\'need_approval\',this.checked?1:0)"></td>'+
+    '<td><input type="checkbox" '+(a.enabled?'checked':'')+' onchange="setf('+i+',\'enabled\',this.checked?1:0)"></td>'+
+    '<td><input class="pinput" type="number" value="'+a.sort_order+'" style="width:60px" onchange="setf('+i+',\'sort_order\',+this.value)"></td>'+
+    '<td><button class="pbtn" onclick="save('+i+')">保存</button></td></tr>').join('');
+}
+function setf(i,k,v){awards[i][k]=v;}
+async function save(i){
+  const a=Object.assign({},awards[i]);const id=a.id;delete a.id;
+  const r=await Pet.post('/parent/api/award/update',Object.assign({id:id},a));
+  Pet.toast(r.message,!r.ok);
+}
+load();
+</script>
+{% endblock %}

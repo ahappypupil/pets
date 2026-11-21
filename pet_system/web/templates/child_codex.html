@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}宠物图鉴{% endblock %}
+{% block content %}
+<div class="codex-grid" id="grid"></div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function load(){
+  const [cx,st]=await Promise.all([Pet.api('/child/api/codex'),Pet.api('/child/api/state')]);
+  if(!cx.ok||!st.ok)return;
+  const got=new Set(cx.data.map(x=>x.tier));
+  const chain=st.data.chain;
+  const g=document.getElementById('grid');g.innerHTML='';
+  chain.forEach(sp=>{
+    const has=got.has(sp.tier);
+    const el=document.createElement('div');
+    el.className='codex-item'+(has?'':' locked');
+    el.innerHTML='<img src="/static/pets/'+sp.svg_key+'_adult.svg" alt="">'+
+      '<div class="nm">'+(has?sp.name:'???')+'</div>'+
+      '<div class="meta">'+(has?'第 '+sp.tier+' 阶 · 已毕业':'还没遇到我')+'</div>';
+    g.appendChild(el);
+  });
+}
+load();
+</script>
+{% endblock %}

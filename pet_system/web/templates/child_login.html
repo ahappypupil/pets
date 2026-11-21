@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>欢迎回来</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/kids.css') }}">
+</head>
+<body class="child-page">
+<div class="login-wrap">
+  <div class="login-card">
+    <div style="font-size:72px">🐾</div>
+    <h1>欢迎回来！</h1>
+    <p>输入你的 4 位密码，去看看小宠物吧</p>
+    <input class="pin-input" id="pin" type="password" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off">
+    <div class="pin-pad">
+      {% for n in [1,2,3,4,5,6,7,8,9] %}
+      <button onclick="tap('{{ n }}')">{{ n }}</button>
+      {% endfor %}
+      <button onclick="document.getElementById('pin').value=''">清除</button>
+      <button onclick="tap('0')">0</button>
+      <button onclick="go()">✅</button>
+    </div>
+    <div class="msg" id="msg"></div>
+  </div>
+</div>
+<script src="{{ url_for('static', filename='js/common.js') }}"></script>
+<script>
+function tap(n){const p=document.getElementById('pin');if(p.value.length<4)p.value+=n;}
+async function go(){
+  const pin=document.getElementById('pin').value;
+  const r=await Pet.post('/child/login',{pin:pin});
+  if(r.ok)location.href='/child/';
+  else{document.getElementById('msg').textContent=r.message;document.getElementById('pin').classList.add('shake');setTimeout(()=>document.getElementById('pin').classList.remove('shake'),400);}
+}
+document.getElementById('pin').addEventListener('keydown',e=>{if(e.key==='Enter')go();});
+</script>
+</body>
+</html>

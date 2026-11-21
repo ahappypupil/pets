@@ -1,0 +1,30 @@
+{% extends "parent_base.html" %}
+{% block title %}总览{% endblock %}
+{% block content %}
+<h1>📊 家庭总览</h1>
+<div class="parent-card">
+  <h2 style="font-size:20px;margin-bottom:12px">孩子</h2>
+  <table><thead><tr><th>名字</th><th>当前积分</th><th>孩子端入口</th></tr></thead>
+  <tbody id="kids"></tbody></table>
+</div>
+<div class="parent-card">
+  <h2 style="font-size:20px;margin-bottom:12px">账本校验</h2>
+  <p id="verify" style="font-size:16px">检查中…</p>
+  <button class="pbtn" onclick="verify()">重新校验</button>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function load(){
+  const r=await Pet.api('/parent/api/children');
+  document.getElementById('kids').innerHTML=r.data.map(c=>'<tr><td>'+c.name+'</td><td>'+c.points_balance+'</td><td><a href="/child/?as='+c.id+'">进入孩子端</a></td></tr>').join('');
+}
+async function verify(){
+  const r=await Pet.api('/parent/api/verify');
+  const e=document.getElementById('verify');
+  if(r.data.ok)e.innerHTML='<span style="color:#38A169;font-weight:700">✓ 账本、库存、图鉴三项一致</span>';
+  else e.innerHTML='<span style="color:#E53E3E;font-weight:700">发现问题：</span>'+r.data.problems.join('；');
+}
+load();verify();
+</script>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}小卖部{% endblock %}
+{% block content %}
+<div class="shop-layout">
+  <div class="shop-left">
+    <div class="balance">我的积分：<b id="pts">0</b></div>
+    <div class="reco" id="reco"></div>
+    <div class="btn-row">
+      <button class="bigbtn blue" onclick="fillRecommend()">✨ 按配方一键补足</button>
+    </div>
+    <div class="stock-line">（也可以自己慢慢挑～）</div>
+  </div>
+  <div class="shop-right">
+    <div class="food-picker">
+      <div class="picker">
+        <div class="ico">🥛</div><div class="lbl">牛奶</div>
+        <div class="stepper">
+          <button onclick="step('milk',-1)">−</button>
+          <span class="num" id="milkNum">0</span>
+          <button onclick="step('milk',1)">＋</button>
+        </div>
+      </div>
+      <div class="picker">
+        <div class="ico">🍪</div><div class="lbl">饼干</div>
+        <div class="stepper">
+          <button onclick="step('cookie',-1)">−</button>
+          <span class="num" id="cookieNum">0</span>
+          <button onclick="step('cookie',1)">＋</button>
+        </div>
+      </div>
+    </div>
+    <div class="balance" style="font-size:22px">现在有：🥛 <span id="milkStock">0</span> ｜ 🍪 <span id="cookieStock">0</span></div>
+    <div class="btn-row">
+      <button class="bigbtn amber" id="exbtn" onclick="doExchange()">🛒 换好吃的</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+let s=null, milk=0, cookie=0;
+async function load(){
+  const r=await Pet.api('/child/api/shop');if(!r.ok)return;
+  s=r.data;
+  document.getElementById('pts').textContent=s.points;
+  document.getElementById('milkStock').textContent=s.milk;
+  document.getElementById('cookieStock').textContent=s.cookie;
+  const rc=s.recommend;
+  if(rc&&rc.cost>0){
+    document.getElementById('reco').innerHTML='建议换：<b>'+rc.milk+' 牛奶 + '+rc.cookie+' 饼干</b>（'+rc.cost+' 积分）'+
+      (rc.need_points>0?'，还差 '+rc.need_points+' 积分':'');
+  }else document.getElementById('reco').innerHTML='食物够啦，快去喂宠物吧！';
+}
+function step(k,d){
+  if(k==='milk')milk=Math.max(0,Math.min(s.cap,milk+d));
+  else cookie=Math.max(0,Math.min(s.cap,cookie+d));
+  document.getElementById('milkNum').textContent=milk;
+  document.getElementById('cookieNum').textContent=cookie;
+}
+function fillRecommend(){
+  const rc=s.recommend;if(!rc)return;
+  milk=rc.milk;cookie=rc.cookie;
+  document.getElementById('milkNum').textContent=milk;
+  document.getElementById('cookieNum').textContent=cookie;
+  Pet.toast('帮你选好啦，再点「换好吃的」');
+}
+async function doExchange(){
+  const r=await Pet.post('/child/api/exchange',{milk:milk,cookie:cookie,request_id:Pet.uuid()});
+  if(!r.ok){Pet.toast(r.message,true);return;}
+  Pet.sound('coin');Pet.toast(r.message);
+  milk=0;cookie=0;document.getElementById('milkNum').textContent=0;document.getElementById('cookieNum').textContent=0;
+  load();
+}
+load();
+</script>
+{% endblock %}

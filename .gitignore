@@ -1,0 +1,13 @@
+# 敏感配置：绝不进版本库
+.env
+
+# Python 缓存
+__pycache__/
+*.py[cod]
+*.egg-info/
+venv/
+.venv/
+
+# 本地运行产物
+*.log
+.DS_Store

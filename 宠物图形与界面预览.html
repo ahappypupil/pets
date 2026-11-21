@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>宠物养成系统 · 视觉预览</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: #EAF4FB;
+    color: #33475B;
+    padding: 28px;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; }
+  h1 { font-size: 26px; color: #2B6CB0; margin-bottom: 4px; font-weight: 700; }
+  .sub { font-size: 15px; color: #6B8299; margin-bottom: 26px; }
+  .card {
+    background: #FFFFFF;
+    border-radius: 22px;
+    padding: 22px 26px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 18px rgba(43,108,176,0.08);
+  }
+  .card h2 { font-size: 19px; color: #2B6CB0; margin-bottom: 18px; }
+  .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+  .pet {
+    background: linear-gradient(180deg, #F4FAFF, #EAF4FB);
+    border-radius: 16px;
+    padding: 12px 6px 14px;
+    text-align: center;
+  }
+  .pet img { width: 100%; max-width: 150px; height: auto; display: block; margin: 0 auto; }
+  .pet .nm { font-size: 15px; font-weight: 700; margin-top: 6px; color: #2C3E50; }
+  .pet .tier { font-size: 12px; color: #8496A8; }
+
+  .stage { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .stage .pet { background: linear-gradient(180deg, #FFF9F0, #FDEBD0); }
+  .stage .lbl { font-size: 14px; color: #B7791F; font-weight: 700; margin-top: 6px; }
+
+  .demo {
+    background: linear-gradient(180deg, #DFF1FB, #EAF8FF);
+    border-radius: 24px;
+    padding: 26px;
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 26px;
+    align-items: center;
+  }
+  .hero { text-align: center; }
+  .hero img { width: 260px; height: 260px; }
+  .bar-outer { background: #FFFFFF; border-radius: 999px; height: 22px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.08); margin-top: 8px; }
+  .bar-inner { height: 100%; width: 66%; background: linear-gradient(90deg,#63B3ED,#4299E1); border-radius: 999px; }
+  .info h3 { font-size: 24px; color: #2B6CB0; margin-bottom: 6px; }
+  .info p { font-size: 17px; color: #4A6178; line-height: 1.6; margin-bottom: 14px; }
+  .bigbtn {
+    display: inline-block;
+    background: #38A169;
+    color: #FFFFFF;
+    font-size: 22px;
+    font-weight: 700;
+    padding: 18px 40px;
+    border-radius: 18px;
+    box-shadow: 0 5px 0 #276749;
+    margin-top: 8px;
+  }
+  .food { display: inline-flex; align-items: center; gap: 8px; font-size: 16px; color: #4A6178; margin-right: 14px; background:#FFFFFF; padding:8px 14px; border-radius:12px;}
+  .note { font-size: 13px; color: #8496A8; margin-top: 14px; line-height: 1.7; }
+  code { background:#EDF2F7; padding:2px 6px; border-radius:6px; font-size:12px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>宠物养成系统 · 视觉预览</h1>
+  <div class="sub">手绘 SVG 矢量图形 · 儿童友好大图形界面 · 参数化批量生成（5 阶 × 3 形态 = 15 个）</div>
+
+  <div class="card">
+    <h2>① 五阶进化链（成体形态）</h2>
+    <div class="grid">
+      <div class="pet"><img src="pet_system/web/static/pets/cloud_beast_adult.svg" alt="云团兽"><div class="nm">云团兽</div><div class="tier">第 1 阶 · 棉花蛋</div></div>
+      <div class="pet"><img src="pet_system/web/static/pets/ember_fox_adult.svg" alt="火苗狐"><div class="nm">火苗狐</div><div class="tier">第 2 阶 · 暖焰蛋</div></div>
+      <div class="pet"><img src="pet_system/web/static/pets/star_deer_adult.svg" alt="星角鹿"><div class="nm">星角鹿</div><div class="tier">第 3 阶 · 星屑蛋</div></div>
+      <div class="pet"><img src="pet_system/web/static/pets/mist_whale_adult.svg" alt="海雾鲸"><div class="nm">海雾鲸</div><div class="tier">第 4 阶 · 潮汐蛋</div></div>
+      <div class="pet"><img src="pet_system/web/static/pets/star_dragon_adult.svg" alt="星辰龙"><div class="nm">星辰龙</div><div class="tier">第 5 阶 · 星河蛋</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>② 同一只宠物的三个成长形态（以云团兽为例）</h2>
+    <div class="stage">
+      <div class="pet"><img src="pet_system/web/static/pets/cloud_beast_egg.svg" alt="棉花蛋"><div class="lbl">蛋 · 孵化中</div></div>
+      <div class="pet"><img src="pet_system/web/static/pets/cloud_beast_juvenile.svg" alt="幼体"><div class="lbl">幼体 · 破壳啦</div></div>
+      <div class="pet"><img src="pet_system/web/static/pets/cloud_beast_adult.svg" alt="成体"><div class="lbl">成体 · 快毕业</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>③ 孩子端「我的宠物」页面示意</h2>
+    <div class="demo">
+      <div class="hero">
+        <img src="pet_system/web/static/pets/cloud_beast_juvenile.svg" alt="当前宠物">
+        <div class="bar-outer"><div class="bar-inner"></div></div>
+      </div>
+      <div class="info">
+        <h3>云团兽长大啦！</h3>
+        <p>还差 <b>4 次</b> 就能变成成体～</p>
+        <p>
+          <span class="food">牛奶 3</span>
+          <span class="food">饼干 2</span>
+        </p>
+        <p>这一次要喂：<b>1 瓶牛奶 + 1 块饼干</b></p>
+        <span class="bigbtn">喂一次</span>
+      </div>
+    </div>
+    <div class="note">
+      界面规范：全屏无滚动条 · 按钮 ≥ 72px · 字号 ≥ 20px · 圆润无锐角 · 点击有动画与音效反馈。<br>
+      图形由 <code>tools/gen_pets_svg.py</code> 参数化生成，改色板即可整批换风格；每个 SVG &lt; 3KB，可用 CSS 驱动破壳 / 长大动画。
+    </div>
+  </div>
+</div>
+</body>
+</html>

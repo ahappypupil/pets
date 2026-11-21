@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}今日奖励{% endblock %}
+{% block content %}
+<div class="awards-grid" id="grid"></div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function load(){
+  const r=await Pet.api('/child/api/awards');
+  if(!r.ok)return;
+  const g=document.getElementById('grid');g.innerHTML='';
+  r.data.forEach(a=>{
+    const done=a.remaining<=0;
+    const el=document.createElement('div');
+    el.className='award-card'+(done?' done':'');
+    el.innerHTML='<div class="award-emoji">'+(a.icon||'⭐')+'</div>'+
+      '<div class="award-name">'+a.name+'</div>'+
+      '<div class="award-points">+'+a.points+' 积分</div>'+
+      '<div class="award-cap">'+(done?'今天完成啦':('今天还能领 '+a.remaining+' 次'))+'</div>';
+    if(!done)el.onclick=()=>claim(a);
+    g.appendChild(el);
+  });
+}
+async function claim(a){
+  const r=await Pet.post('/child/api/claim',{award_id:a.id});
+  if(r.ok){Pet.sound('coin');Pet.toast(r.message);load();}
+  else Pet.toast(r.message,true);
+}
+load();
+</script>
+{% endblock %}

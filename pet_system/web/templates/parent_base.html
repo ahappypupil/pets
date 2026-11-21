@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}家长中心{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/kids.css') }}">
+</head>
+<body class="parent-page">
+<nav class="topnav" style="height:60px">
+  <a href="{{ url_for('parent.dashboard') }}" class="navbtn small">📊 总览</a>
+  <a href="{{ url_for('parent.pending_page') }}" class="navbtn small">✅ 待确认</a>
+  <a href="{{ url_for('parent.awards_page') }}" class="navbtn small">🏆 奖项管理</a>
+  <a href="{{ url_for('parent.settings_page') }}" class="navbtn small">⚙️ 设置</a>
+  <span style="flex:1"></span>
+  <a href="{{ url_for('child.home') }}" class="navbtn small">🐾 孩子端</a>
+  <a href="{{ url_for('parent.logout') }}" class="navbtn small">退出</a>
+</nav>
+<div class="parent-wrap">{% block content %}{% endblock %}</div>
+<script src="{{ url_for('static', filename='js/common.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

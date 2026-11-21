@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}我的宠物{% endblock %}
+{% block content %}
+<div class="pet-layout">
+  <div class="pet-hero">
+    <div class="pet-stage" id="stage">
+      <img id="petimg" src="/static/pets/cloud_beast_egg.svg" alt="宠物">
+      <span class="spark" style="top:8%;left:12%">✦</span>
+      <span class="spark" style="top:20%;right:10%">✧</span>
+    </div>
+    <div class="pet-name" id="petname">加载中…</div>
+    <div class="pet-sub" id="petsub"></div>
+    <div class="progress-wrap">
+      <div class="progress-label" id="proglabel"></div>
+      <div class="bar-outer"><div class="bar-inner" id="bar" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="pet-info">
+    <h2 id="tipTitle">今天也要加油哦！</h2>
+    <div class="tip" id="tip"></div>
+    <div class="food-row">
+      <div class="food-chip milk">🥛 牛奶 <span id="milk">0</span></div>
+      <div class="food-chip cookie">🍪 饼干 <span id="cookie">0</span></div>
+    </div>
+    <div class="formula" id="formula"></div>
+    <div class="btn-row">
+      <button class="bigbtn" id="feedbtn" onclick="doFeed()">🍽️ 喂一次</button>
+    </div>
+    <div class="codex-link">💎 已毕业的宠物在「图鉴」里等你回看</div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+let state=null;
+async function load(){
+  const r=await Pet.api('/child/api/state');
+  if(!r.ok)return;
+  state=r.data; render();
+}
+function formText(f){
+  return {egg:'蛋 · 孵化中', juvenile:'幼体 · 长大啦', adult:'成体 · 快毕业', graduated:'已毕业'}[f]||'';
+}
+function render(){
+  const p=state.pet;
+  if(!p){document.getElementById('petname').textContent='还没有宠物';return;}
+  const svg='/static/pets/'+p.svg_key+'_'+(p.form==='egg'?'egg':p.form==='juvenile'?'juvenile':'adult')+'.svg';
+  document.getElementById('petimg').src=svg;
+  document.getElementById('petname').textContent=p.form==='egg'?p.egg_name:p.name;
+  document.getElementById('petsub').textContent='第 '+p.tier+' 阶 · '+formText(p.form);
+  const remain=Math.max(0,p.K-p.feed_count);
+  document.getElementById('proglabel').textContent='还差 '+remain+' 次'+(p.form==='adult'?'就毕业啦':'就长大啦');
+  document.getElementById('bar').style.width=Math.min(100,Math.round(p.feed_count/p.K*100))+'%';
+  document.getElementById('milk').textContent=state.milk;
+  document.getElementById('cookie').textContent=state.cookie;
+  document.getElementById('formula').innerHTML='这一次要喂：<b>'+p.formula_milk+' 瓶牛奶 + '+p.formula_cookie+' 块饼干</b>';
+  const enough=state.milk>=p.formula_milk&&state.cookie>=p.formula_cookie;
+  const btn=document.getElementById('feedbtn');
+  btn.disabled=!enough;
+  if(enough){
+    document.getElementById('tipTitle').textContent='食物准备好啦！';
+    document.getElementById('tip').innerHTML='快喂给 '+p.name+' 吧～';
+  }else{
+    const lm=Math.max(0,p.formula_milk-state.milk), lc=Math.max(0,p.formula_cookie-state.cookie);
+    let lack=[];if(lm)lack.push(lm+' 瓶牛奶');if(lc)lack.push(lc+' 块饼干');
+    document.getElementById('tipTitle').textContent='还差点食物～';
+    document.getElementById('tip').innerHTML='需要 <b>'+lack.join(' 和 ')+'</b><br>去「小卖部」换点吧！';
+  }
+}
+async function doFeed(){
+  const btn=document.getElementById('feedbtn');btn.disabled=true;
+  const r=await Pet.post('/child/api/feed',{request_id:Pet.uuid()});
+  if(!r.ok){Pet.toast(r.message,true);btn.disabled=false;return;}
+  const d=r.data;
+  if(d.graduated){
+    Pet.sound('graduate');Pet.confetti();
+    Pet.toast(d.message);
+  }else if(d.form==='juvenile'&&state.pet.form==='egg'){
+    Pet.sound('hatch');Pet.toast('破壳啦！小宠物出生了！');
+  }else if(d.form==='adult'&&state.pet.form!=='adult'){
+    Pet.sound('grow');Pet.toast('长大啦！');
+  }else{
+    Pet.sound('feed');Pet.toast(r.message);
+  }
+  await load();
+  document.getElementById('stage').classList.add('pop');
+  setTimeout(()=>document.getElementById('stage').classList.remove('pop'),500);
+}
+load();
+setInterval(load,15000);
+</script>
+{% endblock %}

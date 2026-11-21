@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>{% block title %}宠物养成{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/kids.css') }}">
+</head>
+<body class="{% block bodyclass %}{% endblock %}">
+<!-- 顶部导航：大按钮，儿童可独立切换 -->
+<nav class="topnav">
+  <a href="{{ url_for('child.home') }}" class="navbtn">🏠 宠物</a>
+  <a href="{{ url_for('child.awards_page') }}" class="navbtn">⭐ 奖励</a>
+  <a href="{{ url_for('child.shop_page') }}" class="navbtn">🛒 小卖部</a>
+  <a href="{{ url_for('child.codex_page') }}" class="navbtn">📖 图鉴</a>
+  <span style="flex:1"></span>
+  <a href="{{ url_for('parent.dashboard') }}" class="navbtn small">👨‍👩‍👧 家长</a>
+</nav>
+<div class="page">{% block content %}{% endblock %}</div>
+<script src="{{ url_for('static', filename='js/common.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

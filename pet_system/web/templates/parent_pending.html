@@ -1,0 +1,27 @@
+{% extends "parent_base.html" %}
+{% block title %}待确认{% endblock %}
+{% block content %}
+<h1>✅ 待确认的奖项</h1>
+<div class="parent-card">
+  <div id="list">加载中…</div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function load(){
+  const r=await Pet.api('/parent/api/pending');
+  const el=document.getElementById('list');
+  if(r.data.length===0){el.innerHTML='<p style="font-size:18px;color:#718096">暂时没有待确认的申请 👍</p>';return;}
+  el.innerHTML='<table><thead><tr><th>孩子</th><th>奖项</th><th>积分</th><th>时间</th><th>操作</th></tr></thead><tbody>'+
+    r.data.map(x=>'<tr><td>'+x.child_name+'</td><td>'+x.award_name+'</td><td>+'+x.points+'</td><td>'+x.created_at+'</td>'+
+      '<td><button class="pbtn ok" onclick="dec('+x.id+',1)">通过</button> '+
+      '<button class="pbtn no" onclick="dec('+x.id+',0)">驳回</button></td></tr>').join('')+'</tbody></table>';
+}
+async function dec(id,ok){
+  const note=ok?'':prompt('给孩子的鼓励（可选）：')||'';
+  const r=await Pet.post('/parent/api/decide',{claim_id:id,approve:!!ok,note:note});
+  Pet.toast(r.message,!r.ok);load();
+}
+load();setInterval(load,10000);
+</script>
+{% endblock %}
