@@ -3,13 +3,15 @@
 {% block content %}
 <div class="pet-layout">
   <div class="pet-hero">
-    <div class="pet-stage" id="stage">
-      <img id="petimg" src="/static/pets/cloud_beast_egg.svg" alt="宠物">
+    <div class="pet-stage" id="stage" role="button" tabindex="0" aria-label="点一下和宠物说话">
+      <img id="petimg" class="pet-sprite" src="/static/pets/cloud_beast_egg.svg" alt="宠物">
       <span class="spark" style="top:8%;left:12%">✦</span>
       <span class="spark" style="top:20%;right:10%">✧</span>
+      <div class="talk-bubble" id="bubble" aria-live="polite"></div>
     </div>
     <div class="pet-name" id="petname">加载中…</div>
     <div class="pet-sub" id="petsub"></div>
+    <div class="pet-traits" id="traits"></div>
     <div class="progress-wrap">
       <div class="progress-label" id="proglabel"></div>
       <div class="bar-outer"><div class="bar-inner" id="bar" style="width:0%"></div></div>
@@ -25,14 +27,17 @@
     <div class="formula" id="formula"></div>
     <div class="btn-row">
       <button class="bigbtn" id="feedbtn" onclick="doFeed()">🍽️ 喂一次</button>
+      <button class="bigbtn blue" id="greetbtn" onclick="doSay('greeting')">👋 打个招呼</button>
+      <button class="bigbtn amber" onclick="doSay('intro')">🙋 自我介绍</button>
+      <button class="bigbtn blue" onclick="doSay('checkin')">📅 打卡鼓励</button>
     </div>
-    <div class="codex-link">💎 已毕业的宠物在「图鉴」里等你回看</div>
+    <div class="codex-link">👆 点小怪兽会发声说话 · 也能让它自我介绍、鼓励你打卡 · 💎 毕业宠物在图鉴里等你回看</div>
   </div>
 </div>
 {% endblock %}
 {% block scripts %}
 <script>
-let state=null;
+let state=null, greetedFor=null, lastSpoken={}, bubbleTimer=null;
 async function load(){
   const r=await Pet.api('/child/api/state');
   if(!r.ok)return;
@@ -43,11 +48,24 @@ function formText(f){
 }
 function render(){
   const p=state.pet;
-  if(!p){document.getElementById('petname').textContent='还没有宠物';return;}
+  if(!p){
+    document.getElementById('petname').textContent='还没有宠物';
+    document.getElementById('petsub').textContent='';
+    document.getElementById('traits').innerHTML='';
+    return;
+  }
+  const stage=document.getElementById('stage');
   const svg='/static/pets/'+p.svg_key+'_'+(p.form==='egg'?'egg':p.form==='juvenile'?'juvenile':'adult')+'.svg';
   document.getElementById('petimg').src=svg;
   document.getElementById('petname').textContent=p.form==='egg'?p.egg_name:p.name;
   document.getElementById('petsub').textContent='第 '+p.tier+' 阶 · '+formText(p.form);
+  stage.dataset.motion=(p.profile&&p.profile.motion)||'float';
+  const pr=p.profile||{};
+  document.getElementById('traits').innerHTML=[
+    pr.origin?('📜 '+pr.origin):'',
+    pr.hobby?('🎈 爱好：'+pr.hobby):'',
+    pr.habit?('🌱 习性：'+pr.habit):''
+  ].filter(Boolean).map(x=>'<span>'+x+'</span>').join('');
   const remain=Math.max(0,p.K-p.feed_count);
   document.getElementById('proglabel').textContent='还差 '+remain+' 次'+(p.form==='adult'?'就毕业啦':'就长大啦');
   document.getElementById('bar').style.width=Math.min(100,Math.round(p.feed_count/p.K*100))+'%';
@@ -55,8 +73,7 @@ function render(){
   document.getElementById('cookie').textContent=state.cookie;
   document.getElementById('formula').innerHTML='这一次要喂：<b>'+p.formula_milk+' 瓶牛奶 + '+p.formula_cookie+' 块饼干</b>';
   const enough=state.milk>=p.formula_milk&&state.cookie>=p.formula_cookie;
-  const btn=document.getElementById('feedbtn');
-  btn.disabled=!enough;
+  document.getElementById('feedbtn').disabled=!enough;
   if(enough){
     document.getElementById('tipTitle').textContent='食物准备好啦！';
     document.getElementById('tip').innerHTML='快喂给 '+p.name+' 吧～';
@@ -66,6 +83,32 @@ function render(){
     document.getElementById('tipTitle').textContent='还差点食物～';
     document.getElementById('tip').innerHTML='需要 <b>'+lack.join(' 和 ')+'</b><br>去「小卖部」换点吧！';
   }
+  if(greetedFor!==p.id){ greetedFor=p.id; setTimeout(()=>doSay('greeting',true),500); }
+}
+function showBubble(text){
+  const b=document.getElementById('bubble');
+  b.textContent=text; b.classList.add('show');
+  clearTimeout(bubbleTimer);
+  bubbleTimer=setTimeout(()=>b.classList.remove('show'),5200);
+}
+function playAnim(kind){
+  const stage=document.getElementById('stage');
+  stage.classList.remove('wave','talk');
+  void stage.offsetWidth;
+  stage.classList.add(kind);
+  setTimeout(()=>stage.classList.remove(kind),900);
+}
+async function doSay(kind,silent){
+  if(!state||!state.pet){ Pet.toast('还没有宠物哦',true); return; }
+  const url='/child/api/say?kind='+encodeURIComponent(kind)+'&avoid='+encodeURIComponent(lastSpoken[kind]||'');
+  const r=await Pet.api(url);
+  if(!r.ok){ Pet.toast(r.message,true); return; }
+  const d=r.data;
+  lastSpoken[kind]=d.text;
+  showBubble(d.text);
+  const hello=(kind==='greeting'||kind==='intro');
+  if(!silent) Pet.creatureSound(d.voice,hello?'hello':'talk');
+  playAnim(hello?'wave':'talk');
 }
 async function doFeed(){
   const btn=document.getElementById('feedbtn');btn.disabled=true;
@@ -83,9 +126,13 @@ async function doFeed(){
     Pet.sound('feed');Pet.toast(r.message);
   }
   await load();
-  document.getElementById('stage').classList.add('pop');
-  setTimeout(()=>document.getElementById('stage').classList.remove('pop'),500);
+  playAnim('talk');
 }
+const stage=document.getElementById('stage');
+stage.addEventListener('click',()=>doSay('line'));
+stage.addEventListener('keydown',e=>{
+  if(e.key==='Enter'||e.key===' '){ e.preventDefault(); doSay('line'); }
+});
 load();
 setInterval(load,15000);
 </script>

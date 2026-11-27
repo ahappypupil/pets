@@ -1,4 +1,4 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240">
 <title>云团兽蛋</title>
-<ellipse cx="120" cy="134" rx="70" ry="84" fill="#FFFFFF" stroke="#D6E7F5" stroke-width="3"/><circle cx="96" cy="96" r="19" fill="#FFFFFF"/><circle cx="118" cy="88" r="24" fill="#FFFFFF"/><circle cx="140" cy="98" r="17" fill="#FFFFFF"/><path d="M104 72 L116 84 L107 93 L121 101" fill="none" stroke="#D6E7F5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M166 78 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3 z" fill="#FFD966"/>
+<ellipse cx="120" cy="134" rx="70" ry="84" fill="#FFFFFF" stroke="#D6E7F5" stroke-width="3"/><circle cx="96" cy="96" r="19" fill="#FFFFFF" opacity=".85"/><circle cx="118" cy="88" r="24" fill="#FFFFFF" opacity=".85"/><circle cx="140" cy="98" r="17" fill="#FFFFFF" opacity=".85"/><path d="M104 72 L116 84 L107 93 L121 101" fill="none" stroke="#D6E7F5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M166 78 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3 z" fill="#FFD966"/>
 </svg>

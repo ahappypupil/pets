@@ -44,11 +44,24 @@ def _to_award(r):
                  category=r["category"], exclusive_group=r["exclusive_group"])
 
 
+def _profile(r):
+    val = r.get("profile_json")
+    if isinstance(val, dict):
+        return val
+    if isinstance(val, str) and val:
+        try:
+            return json.loads(val)
+        except ValueError:
+            return {}
+    return {}
+
+
 def _to_species(r):
     return PetSpecies(id=r["id"], tier=r["tier"], name=r["name"],
                       egg_name=r["egg_name"], formula_milk=r["formula_milk"],
                       formula_cookie=r["formula_cookie"], feed_times=r["feed_times"],
-                      next_species_id=r["next_species_id"], svg_key=r["svg_key"])
+                      next_species_id=r["next_species_id"], svg_key=r["svg_key"],
+                      profile=_profile(r))
 
 
 def _to_pet(r):

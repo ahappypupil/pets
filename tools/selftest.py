@@ -8,12 +8,14 @@ import sys
 import os
 import json
 import uuid
+import datetime
 import urllib.request
 import urllib.error
 import http.cookiejar
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from pet_system.config import db_kwargs  # noqa: E402
+from pet_system.catalog import load_catalog  # noqa: E402
 
 BASE = "http://127.0.0.1:5000"
 RESULTS = []
@@ -56,7 +58,58 @@ def check(name, cond, detail=""):
     print(("  [OK]   " if ok else "  [FAIL] ") + name + (("  -> " + str(detail)) if detail else ""))
 
 
-def reset():
+ALLOW_RESET = False
+BACKUP_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "logs")
+VOLATILE = ["pet_instance", "codex", "point_ledger", "feeding_record",
+            "exchange_order", "award_claim"]
+
+
+def snapshot():
+    """清空前把业务表存成 JSON，便于误操作时找回。"""
+    import pymysql
+    os.makedirs(BACKUP_DIR, exist_ok=True)
+    path = os.path.join(BACKUP_DIR, "selftest_backup_" +
+                        datetime.datetime.now().strftime("%Y%m%d_%H%M%S") + ".json")
+    data = {}
+    c = pymysql.connect(**db_kwargs())
+    cur = c.cursor(pymysql.cursors.DictCursor)
+    for t in ["child", "pet_instance", "food_stock", "codex", "point_ledger",
+              "feeding_record", "exchange_order", "award_claim", "request_log",
+              "app_config", "award"]:
+        cur.execute("SELECT * FROM " + t)
+        data[t] = cur.fetchall()
+    c.close()
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2, default=str)
+    return path
+
+
+def prepare_reset():
+    """库里有真实数据时默认拒绝清空；显式授权后才备份并继续。"""
+    global ALLOW_RESET
+    import pymysql
+    c = pymysql.connect(**db_kwargs())
+    cur = c.cursor()
+    nonempty = {}
+    for t in VOLATILE:
+        cur.execute("SELECT COUNT(*) FROM " + t)
+        n = cur.fetchone()[0]
+        if n:
+            nonempty[t] = n
+    c.close()
+    allowed = "--reset-data" in sys.argv or os.environ.get("PET_SELFTEST_RESET") == "1"
+    if nonempty and not allowed:
+        raise SystemExit(
+            "检测到库中已有真实数据：" + str(nonempty) +
+            "。自测默认拒绝清空；确认要清库重跑请加 --reset-data "
+            "或设置 PET_SELFTEST_RESET=1（会先备份到 logs/）。"
+        )
+    if nonempty:
+        print("已备份原有数据到:", snapshot())
+    ALLOW_RESET = True
+
+
+def _reset_unchecked():
     """恢复干净初始状态：云团兽蛋 0/12、0 积分、0 库存。"""
     import pymysql
     c = pymysql.connect(**db_kwargs())
@@ -74,12 +127,19 @@ def reset():
     return pid
 
 
+def reset():
+    if not ALLOW_RESET:
+        raise SystemExit("未通过安全检查，拒绝重置真实数据")
+    return _reset_unchecked()
+
+
 def main():
     print("=" * 60)
     print("宠物养成系统 · 端到端自测")
     print("=" * 60)
 
-    # 清场
+    # 清场前先确认不是在真实数据上跑
+    prepare_reset()
     reset()
 
     kid, par = session(), session()
@@ -107,15 +167,34 @@ def main():
           f"{pet.get('name')} {pet.get('feed_count')}/{pet.get('K')} {pet.get('form')}")
     check("初始积分与库存为 0", st.get("points") == 0 and st.get("milk") == 0 and st.get("cookie") == 0,
           f"积分{st.get('points')} 库存{st.get('milk')}/{st.get('cookie')}")
+    check("养成链来自可扩展目录",
+          len(st.get("chain", [])) == len(load_catalog()) >= 10,
+          len(st.get("chain", [])))
+    profile = pet.get("profile") or {}
+    check("宠物档案含爱好/习性/声音/台词",
+          all(k in profile for k in ("hobby", "habit", "voice", "greetings", "lines")),
+          list(profile))
+    s, j = call(kid, "/child/api/say?kind=line")
+    check("随机说话接口可用", j.get("ok") and bool(j.get("data", {}).get("text")),
+          j.get("data"))
+    for kind, label in (("intro", "自我介绍"), ("checkin", "打卡鼓励")):
+        s, j = call(kid, "/child/api/say?kind=" + kind)
+        check(label + "接口可用", j.get("ok") and bool(j.get("data", {}).get("text")),
+              j.get("data"))
 
     s, j = call(kid, "/child/api/awards")
-    awards = [a for a in j.get("data", []) if a.get("points") == 10]
-    check("奖项列表可读取", s == 200 and len(awards) >= 2, f"{len(awards)} 个10分奖项")
+    # 孩子端接口本身只返回 enabled 的奖项
+    awards = list(j.get("data", []))
+    check("奖项列表可读取", s == 200 and len(awards) >= 2, f"{len(awards)} 个可用奖项")
     if len(awards) < 2:
         print("奖项不足，终止测试")
         return finish()
 
+    # 测试假设前两项各 10 分；临时改分并在结束前还原，不破坏家长现有配置
     aid1, aid2 = awards[0]["id"], awards[1]["id"]
+    old_points = {aid1: awards[0]["points"], aid2: awards[1]["points"]}
+    for aid in (aid1, aid2):
+        call(par, "/parent/api/award/update", {"id": aid, "points": 10})
     s, j = call(kid, "/child/api/claim", {"award_id": aid1})
     check("申请奖项1", j.get("ok"), j.get("message"))
     s, j = call(kid, "/child/api/claim", {"award_id": aid1})
@@ -185,7 +264,10 @@ def main():
     s, j = call(par, "/parent/api/verify")
     check("家长端账本校验一致", j.get("data", {}).get("ok"), j.get("data", {}).get("problems"))
 
-    # daily_cap>1 的奖项（阅读20分钟 daily_cap=2）应能同日批准两次
+    # daily_cap>1 的奖项应能同日批准两次；临时设为 2，结束前还原
+    s, j = call(par, "/parent/api/awards")
+    old_cap = next(a["daily_cap"] for a in j["data"] if a["id"] == 3)
+    call(par, "/parent/api/award/update", {"id": 3, "daily_cap": 2})
     s, j = call(kid, "/child/api/claim", {"award_id": 3})
     check("申请阅读(第1次)", j.get("ok"), j.get("message"))
     s, j = call(kid, "/child/api/claim", {"award_id": 3})
@@ -214,6 +296,9 @@ def main():
     check("汇率已还原为2", j["data"]["exchange_rate"]["value"]["rate"] == 2,
           j["data"]["exchange_rate"]["value"])
 
+    for aid, pts in old_points.items():
+        call(par, "/parent/api/award/update", {"id": aid, "points": pts})
+    call(par, "/parent/api/award/update", {"id": 3, "daily_cap": old_cap})
     from pet_system.services.ledger import verify
     check("最终账本校验一致", verify(1)["ok"], verify(1)["problems"])
 

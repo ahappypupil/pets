@@ -1,0 +1,557 @@
+[
+  {
+    "id": 1,
+    "tier": 1,
+    "name": "云团兽",
+    "egg_name": "棉花蛋",
+    "formula_milk": 1,
+    "formula_cookie": 1,
+    "feed_times": 12,
+    "next": 2,
+    "svg_key": "cloud_beast",
+    "art": {
+      "body": "#FFFFFF",
+      "edge": "#D6E7F5",
+      "belly": "#E8F3FC",
+      "eye": "#3A3A4A",
+      "blush": "#FFB3C1",
+      "accent": "#FFD966",
+      "features": [
+        "cloud_ears",
+        "sparkle"
+      ]
+    },
+    "profile": {
+      "origin": "原创伙伴 · 住在早上的云朵里",
+      "hobby": "把云朵捏成小书页",
+      "habit": "每天先向太阳点头，再开始做事",
+      "motion": "float",
+      "voice": {
+        "wave": "sine",
+        "notes": [
+          523,
+          659,
+          784
+        ],
+        "step": 0.13,
+        "gain": 0.12
+      },
+      "greetings": [
+        "你好呀！我是一团软软的云，今天想和你一起读书。",
+        "早安！我把第一缕阳光留给你啦。"
+      ],
+      "lines": [
+        "你坐下来认真读书的样子，像云朵一样轻柔又好看！",
+        "慢一点没关系，云朵也是一点点飘过天空的。",
+        "今天记住一个小知识，就是给自己的小云朵加了一颗糖。",
+        "遇到难题先深呼吸，我陪你一起想。"
+      ],
+      "checkins": [
+        "今天读完一本书，记得回来点一下打卡哦！",
+        "完成一个小任务就打卡，云朵会替你记着。",
+        "连续打卡不用赶，每天一点点就很好。"
+      ]
+    }
+  },
+  {
+    "id": 2,
+    "tier": 2,
+    "name": "火苗狐",
+    "egg_name": "暖焰蛋",
+    "formula_milk": 2,
+    "formula_cookie": 1,
+    "feed_times": 16,
+    "next": 3,
+    "svg_key": "ember_fox",
+    "art": {
+      "body": "#FF9A52",
+      "edge": "#E8762E",
+      "belly": "#FFE0B2",
+      "eye": "#3A2A24",
+      "blush": "#FF6B6B",
+      "accent": "#FFD166",
+      "features": [
+        "pointy_ears",
+        "flame"
+      ]
+    },
+    "profile": {
+      "origin": "原创伙伴 · 尾巴尖藏着一小簇火光",
+      "hobby": "给写完的作业画一颗小星星",
+      "habit": "做完一件事就去喝口水，再开始下一件",
+      "motion": "hop",
+      "voice": {
+        "wave": "triangle",
+        "notes": [
+          659,
+          880,
+          1046
+        ],
+        "step": 0.09,
+        "gain": 0.11
+      },
+      "greetings": [
+        "嗨！我是火苗狐，我的小火苗只用来照亮，不烫人哦。",
+        "你来啦！我今天已经准备好为你鼓掌了。"
+      ],
+      "lines": [
+        "哇！你刚才那道题想了好久都没放弃，像小火苗一样棒！",
+        "把不会的题圈出来，就是找到了下一步的小路。",
+        "写字慢一点也可以，稳稳的才最厉害。",
+        "今天多读一页书，小火苗就多亮一点点。"
+      ],
+      "checkins": [
+        "打卡啦！你的小火苗又亮了一格！",
+        "今天的任务完成了吗？点一下打卡，我来帮你加油。",
+        "哪怕只完成一项，也值得打卡庆祝。"
+      ]
+    }
+  },
+  {
+    "id": 3,
+    "tier": 3,
+    "name": "星角鹿",
+    "egg_name": "星屑蛋",
+    "formula_milk": 2,
+    "formula_cookie": 2,
+    "feed_times": 20,
+    "next": 4,
+    "svg_key": "star_deer",
+    "art": {
+      "body": "#B4A5EC",
+      "edge": "#8E7BD6",
+      "belly": "#E8E2FA",
+      "eye": "#3A2A4A",
+      "blush": "#FF9EC4",
+      "accent": "#FFD966",
+      "features": [
+        "leaf_ears",
+        "antlers",
+        "stars"
+      ]
+    },
+    "profile": {
+      "origin": "原创伙伴 · 鹿角上挂着两颗小星星",
+      "hobby": "把学过的字排成一颗星星",
+      "habit": "每天睡前数三件今天学会的事",
+      "motion": "sway",
+      "voice": {
+        "wave": "sine",
+        "notes": [
+          784,
+          988,
+          1175,
+          988
+        ],
+        "step": 0.11,
+        "gain": 0.1
+      },
+      "greetings": [
+        "叮咚！星角鹿把一颗星星挂在了你的名字旁边。",
+        "你好呀，我听见你的读书声，星星都探出头啦。"
+      ],
+      "lines": [
+        "你今天又学会了一个词，星星悄悄亮了一格！",
+        "错题不是绊脚石，是带你找到正确答案的路标。",
+        "读累了就抬头看看，我和星星都在这里。",
+        "每天一小步，走在夜里也不会迷路。"
+      ],
+      "checkins": [
+        "完成今天的小目标，星星就替你亮一下——记得打卡哦。",
+        "打卡不是考试，是给努力的自己盖颗星。",
+        "今天打卡了吗？我在等你分享好消息。"
+      ]
+    }
+  },
+  {
+    "id": 4,
+    "tier": 4,
+    "name": "海雾鲸",
+    "egg_name": "潮汐蛋",
+    "formula_milk": 3,
+    "formula_cookie": 2,
+    "feed_times": 24,
+    "next": 5,
+    "svg_key": "mist_whale",
+    "art": {
+      "body": "#5FC8E8",
+      "edge": "#2E9CC0",
+      "belly": "#DFF5FB",
+      "eye": "#2A3A48",
+      "blush": "#FF9EB5",
+      "accent": "#BFEFFF",
+      "features": [
+        "fin",
+        "spout"
+      ]
+    },
+    "profile": {
+      "origin": "原创伙伴 · 背上有会唱歌的水雾",
+      "hobby": "听海浪读拼音",
+      "habit": "遇到难题先慢慢数到五，再想办法",
+      "motion": "rock",
+      "voice": {
+        "wave": "sine",
+        "notes": [
+          330,
+          392,
+          440,
+          392
+        ],
+        "step": 0.22,
+        "gain": 0.14
+      },
+      "greetings": [
+        "哗啦～我是海雾鲸，今天想听你读一段故事。",
+        "你好呀，我把海浪的声音装在背上带来了。"
+      ],
+      "lines": [
+        "你刚才读得真稳，像海浪一下一下拍在沙滩上。",
+        "不会的单词先放一放，喝口水再回来找它。",
+        "每天积累五个词，慢慢就汇成一片小海啦。",
+        "犯错也没关系，海浪退回去还会再来。"
+      ],
+      "checkins": [
+        "今天的努力像小溪一样流进海里，别忘了打卡。",
+        "完成一项就打卡一次，海浪会替你记住。",
+        "慢慢来，今天打卡就是胜利。"
+      ]
+    }
+  },
+  {
+    "id": 5,
+    "tier": 5,
+    "name": "星辰龙",
+    "egg_name": "星河蛋",
+    "formula_milk": 3,
+    "formula_cookie": 3,
+    "feed_times": 30,
+    "next": 6,
+    "svg_key": "star_dragon",
+    "art": {
+      "body": "#C9A0F0",
+      "edge": "#9B6FD6",
+      "belly": "#F3E8FB",
+      "eye": "#3A2A48",
+      "blush": "#FF9EC4",
+      "accent": "#FFD166",
+      "features": [
+        "horn",
+        "wings",
+        "sparkle"
+      ]
+    },
+    "profile": {
+      "origin": "原创伙伴 · 翅膀一扇就落下星屑",
+      "hobby": "把难题拆成一颗一颗小星星",
+      "habit": "每天把学到的知识讲给家人听",
+      "motion": "flutter",
+      "voice": {
+        "wave": "triangle",
+        "notes": [
+          523,
+          659,
+          784,
+          1046
+        ],
+        "step": 0.14,
+        "gain": 0.11
+      },
+      "greetings": [
+        "你好！我是星辰龙，翅膀上沾着今天的新知识。",
+        "来啦！我带你飞过一小段星光路吧。"
+      ],
+      "lines": [
+        "你把那么长的题一步步做完了，真像一条稳稳飞行的龙！",
+        "今天不懂的地方，明天再问一次，就会忽然明白。",
+        "讲给别人听一遍，知识就长出了翅膀。",
+        "你已经走了很远啦，抬头看看前面的星星。"
+      ],
+      "checkins": [
+        "完成今天的学习，点一下打卡，星星会为你排队。",
+        "每一次打卡都是给翅膀加一片鳞光。",
+        "今天也飞了一小段，记得打卡留个记号。"
+      ]
+    }
+  },
+  {
+    "id": 6,
+    "tier": 6,
+    "name": "九尾狐",
+    "egg_name": "云尾蛋",
+    "formula_milk": 2,
+    "formula_cookie": 2,
+    "feed_times": 12,
+    "next": 7,
+    "svg_key": "jiuwei_fox",
+    "art": {
+      "body": "#FFB9C6",
+      "edge": "#E8849C",
+      "belly": "#FFF0F3",
+      "eye": "#4A2A3A",
+      "blush": "#FF7F9E",
+      "accent": "#FFF3B0",
+      "features": [
+        "pointy_ears",
+        "tails",
+        "stars"
+      ]
+    },
+    "profile": {
+      "origin": "《山海经·南山经》· 青丘九尾狐",
+      "hobby": "用尾巴当毛笔，在云上写字",
+      "habit": "月亮出来时数星星，数到十就收好书本",
+      "motion": "sway",
+      "voice": {
+        "wave": "sine",
+        "notes": [
+          784,
+          988,
+          1175,
+          988
+        ],
+        "step": 0.1,
+        "gain": 0.1
+      },
+      "greetings": [
+        "你好呀，我是青丘来的九尾狐，九条尾巴都在为你加油！",
+        "嗨！我刚在云上写了一个「早」字，送给你。"
+      ],
+      "lines": [
+        "你今天专心的样子，比九条尾巴还要闪亮！",
+        "写错没关系，改一遍就是往前走一步。",
+        "把大目标分成小格子，我陪你一格一格填。",
+        "读完这一页，尾巴就会多摇一下哦。"
+      ],
+      "checkins": [
+        "完成今天的任务，九条尾巴一起为你打卡摇一摇！",
+        "今天打卡了吗？我在云上写你的名字。",
+        "小小坚持也值得打卡，尾巴会替你鼓掌。"
+      ]
+    }
+  },
+  {
+    "id": 7,
+    "tier": 7,
+    "name": "精卫鸟",
+    "egg_name": "心愿蛋",
+    "formula_milk": 1,
+    "formula_cookie": 2,
+    "feed_times": 12,
+    "next": 8,
+    "svg_key": "jingwei_bird",
+    "art": {
+      "body": "#7FD1B9",
+      "edge": "#3E9F86",
+      "belly": "#E6F7F1",
+      "eye": "#243B36",
+      "blush": "#FF9EA8",
+      "accent": "#FFE08A",
+      "features": [
+        "beak",
+        "wings",
+        "feathers"
+      ]
+    },
+    "profile": {
+      "origin": "《山海经·北山经》· 衔石填海的精卫",
+      "hobby": "把小石子排成一句鼓励的话",
+      "habit": "每天只做一点点，但每天都做",
+      "motion": "flutter",
+      "voice": {
+        "wave": "triangle",
+        "notes": [
+          880,
+          1046,
+          880,
+          1318
+        ],
+        "step": 0.08,
+        "gain": 0.09
+      },
+      "greetings": [
+        "啾啾！我是精卫，今天也来陪你做一点点。",
+        "你好呀，我衔来一颗小石子，给你的进度加一格。"
+      ],
+      "lines": [
+        "一下子做不到没关系，一点点做，路就会变短。",
+        "你刚才坚持到了最后，像我衔石子一样有耐心！",
+        "今天读五分钟，明天读五分钟，就会读出一座小山。",
+        "累了就歇一歇，石子放旁边，随时可以再出发。"
+      ],
+      "checkins": [
+        "今天又衔了一颗小石子，记得打卡放好哦。",
+        "完成一点点就打卡，石子会堆成小山。",
+        "打卡不用大声，悄悄坚持就好。"
+      ]
+    }
+  },
+  {
+    "id": 8,
+    "tier": 8,
+    "name": "鹿蜀",
+    "egg_name": "花纹蛋",
+    "formula_milk": 2,
+    "formula_cookie": 2,
+    "feed_times": 14,
+    "next": 9,
+    "svg_key": "lusu_horse",
+    "art": {
+      "body": "#F0C987",
+      "edge": "#C99A4E",
+      "belly": "#FFF2D9",
+      "eye": "#4A3524",
+      "blush": "#FF9E9E",
+      "accent": "#8E6B3A",
+      "features": [
+        "pointy_ears",
+        "mane",
+        "stripes"
+      ]
+    },
+    "profile": {
+      "origin": "《山海经·南山经》· 白首虎纹的鹿蜀",
+      "hobby": "给儿歌打拍子，边唱边记单词",
+      "habit": "走路轻快，遇到难题不急不躁",
+      "motion": "hop",
+      "voice": {
+        "wave": "triangle",
+        "notes": [
+          523,
+          659,
+          784,
+          659
+        ],
+        "step": 0.12,
+        "gain": 0.1
+      },
+      "greetings": [
+        "哒哒！我是鹿蜀，身上的花纹像小节拍器。",
+        "你来啦，我正想唱一首今天学到的歌呢。"
+      ],
+      "lines": [
+        "跟着节拍读一遍，词语就乖乖住进脑袋里啦！",
+        "不着急，稳稳地走，一步就是一个脚印。",
+        "你今天把字写得这么整齐，我正在心里给你打拍子。",
+        "唱错了就重来一遍，笑声比完美更重要。"
+      ],
+      "checkins": [
+        "做完今天的练习，跟着节拍点一下打卡！",
+        "打卡啦！我给你打一拍掌声。",
+        "今天进步一点点，值得一个大大的打卡。"
+      ]
+    }
+  },
+  {
+    "id": 9,
+    "tier": 9,
+    "name": "旋龟",
+    "egg_name": "旋纹蛋",
+    "formula_milk": 2,
+    "formula_cookie": 1,
+    "feed_times": 14,
+    "next": 10,
+    "svg_key": "xuangui_turtle",
+    "art": {
+      "body": "#8FBF9F",
+      "edge": "#4F8A6B",
+      "belly": "#E4F3E8",
+      "eye": "#263B31",
+      "blush": "#FFA8A0",
+      "accent": "#BFE3CB",
+      "features": [
+        "beak",
+        "shell",
+        "ripple"
+      ]
+    },
+    "profile": {
+      "origin": "《山海经·南山经》· 鸟首龟身的旋龟",
+      "hobby": "趴在溪流边听水声背古诗",
+      "habit": "遇到难题先慢呼吸三次，再仔细看题",
+      "motion": "rock",
+      "voice": {
+        "wave": "sine",
+        "notes": [
+          294,
+          330,
+          392,
+          330
+        ],
+        "step": 0.25,
+        "gain": 0.13
+      },
+      "greetings": [
+        "咕噜～我是旋龟，壳上刻着今天的小目标。",
+        "你好呀，慢一点也没关系，我陪你慢慢来。"
+      ],
+      "lines": [
+        "你刚才深吸了一口气再想题，这个办法真棒！",
+        "像小溪一样，慢慢流也能到很远的地方。",
+        "把题目读两遍，答案常常就藏在第二遍里。",
+        "今天记住一个字，明天就多一片小水花。"
+      ],
+      "checkins": [
+        "慢慢做完，慢慢打卡，小溪会记住你的坚持。",
+        "今天任务完成了吗？深呼吸一下，再点打卡。",
+        "打卡不是快，是每天都回来。"
+      ]
+    }
+  },
+  {
+    "id": 10,
+    "tier": 10,
+    "name": "白泽",
+    "egg_name": "智慧蛋",
+    "formula_milk": 3,
+    "formula_cookie": 3,
+    "feed_times": 16,
+    "next": null,
+    "svg_key": "baize_beast",
+    "art": {
+      "body": "#F7F2E8",
+      "edge": "#CDBFA6",
+      "belly": "#FFF9EE",
+      "eye": "#3A3A4A",
+      "blush": "#FFB6C1",
+      "accent": "#8AB6D6",
+      "features": [
+        "cloud_ears",
+        "book",
+        "stars"
+      ]
+    },
+    "profile": {
+      "origin": "《山海经》· 懂万物名字的白泽",
+      "hobby": "问「为什么」，再把答案画成小图",
+      "habit": "每天把新学的知识讲给一个人听",
+      "motion": "float",
+      "voice": {
+        "wave": "sine",
+        "notes": [
+          659,
+          880,
+          1046,
+          1318
+        ],
+        "step": 0.13,
+        "gain": 0.11
+      },
+      "greetings": [
+        "你好呀，我是白泽！你今天想问我哪一个「为什么」？",
+        "来啦，我把一个新知识藏在智慧蛋里送给你。"
+      ],
+      "lines": [
+        "会问问题的孩子，已经找到了一半答案！",
+        "把知识讲给别人听，它就在你心里长得更牢了。",
+        "你今天比昨天多懂了一点点，这就是很棒的成长。",
+        "世界很大，我们一次认识一个小秘密就好。"
+      ],
+      "checkins": [
+        "今天学会了什么？讲给别人听，然后来打卡。",
+        "会问问题的你，今天也值得打卡。",
+        "打卡一下，让新知识住得更牢。"
+      ]
+    }
+  }
+]

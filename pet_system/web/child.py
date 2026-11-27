@@ -63,6 +63,15 @@ def api_state():
     return jsonify(ok=True, data=feed_svc.pet_view(session["child_id"]))
 
 
+@bp.route("/api/say")
+@child_required
+def api_say():
+    kind = request.args.get("kind", "line")
+    avoid = request.args.get("avoid") or None
+    r = feed_svc.say(session["child_id"], kind, avoid)
+    return jsonify(ok=r.ok, message=r.message, code=r.code, data=r.value)
+
+
 @bp.route("/api/awards")
 @child_required
 def api_awards():

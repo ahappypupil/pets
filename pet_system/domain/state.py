@@ -63,6 +63,7 @@ class PetSpecies:
     feed_times: int
     next_species_id: int | None
     svg_key: str
+    profile: dict | None = None
 
 
 @dataclass(frozen=True)

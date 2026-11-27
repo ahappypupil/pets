@@ -5,6 +5,7 @@
 """
 from contextlib import contextmanager
 import pymysql
+from . import catalog
 from .config import db_kwargs, DBConfig
 
 
@@ -45,7 +46,7 @@ def init_db():
         host=DBConfig.HOST, port=DBConfig.PORT, user=DBConfig.USER,
         password=DBConfig.PASSWORD, charset=DBConfig.CHARSET, autocommit=True,
     )
-    cur = root_conn.cursor()
+    cur = root_conn.cursor(pymysql.cursors.DictCursor)
     for rel in ("schema.sql", "config/seed.sql"):
         path = __import__("os").path.join(base, rel)
         sql = open(path, encoding="utf-8").read()
@@ -54,6 +55,9 @@ def init_db():
                      if l.strip() and not l.strip().startswith("--")]
             if lines:
                 cur.execute("\n".join(lines))
+    # 老库补列 + 同步可扩展目录；只补空档案、不改家长调过的配方
+    catalog.ensure_schema(cur)
+    catalog.sync_catalog(cur)
     root_conn.close()
 
 

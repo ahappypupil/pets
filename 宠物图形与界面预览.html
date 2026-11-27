@@ -73,16 +73,21 @@
 <body>
 <div class="wrap">
   <h1>宠物养成系统 · 视觉预览</h1>
-  <div class="sub">手绘 SVG 矢量图形 · 儿童友好大图形界面 · 参数化批量生成（5 阶 × 3 形态 = 15 个）</div>
+  <div class="sub">参数化 SVG 矢量图形 · 儿童友好大图形界面 · 10 种 × 3 形态 = 30 个（可继续扩展）</div>
 
   <div class="card">
-    <h2>① 五阶进化链（成体形态）</h2>
+    <h2>① 十阶进化链（成体形态，后 5 阶取自《山海经》）</h2>
     <div class="grid">
       <div class="pet"><img src="pet_system/web/static/pets/cloud_beast_adult.svg" alt="云团兽"><div class="nm">云团兽</div><div class="tier">第 1 阶 · 棉花蛋</div></div>
       <div class="pet"><img src="pet_system/web/static/pets/ember_fox_adult.svg" alt="火苗狐"><div class="nm">火苗狐</div><div class="tier">第 2 阶 · 暖焰蛋</div></div>
       <div class="pet"><img src="pet_system/web/static/pets/star_deer_adult.svg" alt="星角鹿"><div class="nm">星角鹿</div><div class="tier">第 3 阶 · 星屑蛋</div></div>
       <div class="pet"><img src="pet_system/web/static/pets/mist_whale_adult.svg" alt="海雾鲸"><div class="nm">海雾鲸</div><div class="tier">第 4 阶 · 潮汐蛋</div></div>
       <div class="pet"><img src="pet_system/web/static/pets/star_dragon_adult.svg" alt="星辰龙"><div class="nm">星辰龙</div><div class="tier">第 5 阶 · 星河蛋</div></div>
+      <div class="pet"><img src="pet_system/web/static/pets/jiuwei_fox_adult.svg" alt="九尾狐"><div class="nm">九尾狐</div><div class="tier">第 6 阶 · 云尾蛋</div></div>
+      <div class="pet"><img src="pet_system/web/static/pets/jingwei_bird_adult.svg" alt="精卫鸟"><div class="nm">精卫鸟</div><div class="tier">第 7 阶 · 心愿蛋</div></div>
+      <div class="pet"><img src="pet_system/web/static/pets/lusu_horse_adult.svg" alt="鹿蜀"><div class="nm">鹿蜀</div><div class="tier">第 8 阶 · 花纹蛋</div></div>
+      <div class="pet"><img src="pet_system/web/static/pets/xuangui_turtle_adult.svg" alt="旋龟"><div class="nm">旋龟</div><div class="tier">第 9 阶 · 旋纹蛋</div></div>
+      <div class="pet"><img src="pet_system/web/static/pets/baize_beast_adult.svg" alt="白泽"><div class="nm">白泽</div><div class="tier">第 10 阶 · 智慧蛋</div></div>
     </div>
   </div>
 
@@ -110,12 +115,15 @@
           <span class="food">饼干 2</span>
         </p>
         <p>这一次要喂：<b>1 瓶牛奶 + 1 块饼干</b></p>
+        <p>💬 怪兽说：「你今天又进步啦！」</p>
         <span class="bigbtn">喂一次</span>
+        <span class="bigbtn" style="background:#2B6CB0;box-shadow:0 6px 0 #1B4F88">👋 打个招呼</span>
       </div>
     </div>
     <div class="note">
       界面规范：全屏无滚动条 · 按钮 ≥ 72px · 字号 ≥ 20px · 圆润无锐角 · 点击有动画与音效反馈。<br>
-      图形由 <code>tools/gen_pets_svg.py</code> 参数化生成，改色板即可整批换风格；每个 SVG &lt; 3KB，可用 CSS 驱动破壳 / 长大动画。
+      每种怪兽有自己的爱好/习性/叫声/问候语与鼓励语；打开页面主动打招呼，点击随机说话。<br>
+      图形由 <code>tools/gen_pets_svg.py</code> 从 <code>config/pets.json</code> 参数化生成；每个 SVG &lt; 3KB，CSS 驱动待机 / 打招呼 / 说话 / 破壳 / 长大动画。
     </div>
   </div>
 </div>

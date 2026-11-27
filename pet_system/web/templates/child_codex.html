@@ -13,11 +13,14 @@ async function load(){
   const g=document.getElementById('grid');g.innerHTML='';
   chain.forEach(sp=>{
     const has=got.has(sp.tier);
+    const pr=sp.profile||{};
     const el=document.createElement('div');
     el.className='codex-item'+(has?'':' locked');
+    // 卡片文案统一为两行，出处/爱好放到悬停提示，避免已解锁卡片比其他卡片高
     el.innerHTML='<img src="/static/pets/'+sp.svg_key+'_adult.svg" alt="">'+
       '<div class="nm">'+(has?sp.name:'???')+'</div>'+
-      '<div class="meta">'+(has?'第 '+sp.tier+' 阶 · 已毕业':'还没遇到我')+'</div>';
+      '<div class="meta">'+(has?('第 '+sp.tier+' 阶 · 已毕业'):'还没遇到我')+'</div>';
+    el.title=has?[sp.name,pr.origin,pr.hobby&&('爱好：'+pr.hobby)].filter(Boolean).join(' · '):'还没遇到我';
     g.appendChild(el);
   });
 }

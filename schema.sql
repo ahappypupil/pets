@@ -149,6 +149,7 @@ CREATE TABLE IF NOT EXISTS pet_species (
   feed_times     INT NOT NULL COMMENT '本阶毕业所需喂食次数 K',
   next_species_id BIGINT DEFAULT NULL,
   svg_key        VARCHAR(32) NOT NULL COMMENT '对应 SVG 文件名前缀',
+  profile_json   JSON DEFAULT NULL COMMENT '档案：出处/爱好/习性/声音/台词/动画',
   UNIQUE KEY uk_species_tier (tier),
   CHECK (formula_milk > 0),
   CHECK (formula_cookie > 0),

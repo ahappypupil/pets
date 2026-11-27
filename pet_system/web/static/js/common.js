@@ -26,6 +26,39 @@ window.Pet = {
       a.volume = 0.6; a.play();
     } catch (e) {}
   },
+  // 每种怪兽用档案里的 waveform + 音阶现场合成叫声，无需为每个新物种准备音频文件
+  creatureSound(voice, mood) {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      if (!this._actx) this._actx = new AudioCtx();
+      const ctx = this._actx;
+      if (ctx.state === 'suspended') ctx.resume();
+      let notes = (voice && voice.notes && voice.notes.length) ? voice.notes.slice() : [523, 659];
+      if (mood === 'hello') notes = [notes[0], notes[0], notes[notes.length - 1]];
+      const step = Math.max(0.06, (voice && voice.step) || 0.12);
+      const peak = Math.min(0.18, (voice && voice.gain) || 0.1);
+      const t0 = ctx.currentTime + 0.01;
+      notes.forEach((freq, i) => {
+        if (!freq) return;
+        const osc = ctx.createOscillator();
+        const g = ctx.createGain();
+        const at = t0 + i * step;
+        osc.type = (voice && voice.wave) || 'sine';
+        osc.frequency.setValueAtTime(freq, at);
+        if (mood === 'hello') {
+          osc.frequency.exponentialRampToValueAtTime(freq * 1.12, at + step * 0.7);
+        }
+        g.gain.setValueAtTime(0.0001, at);
+        g.gain.exponentialRampToValueAtTime(peak, at + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, at + step * 0.9);
+        osc.connect(g);
+        g.connect(ctx.destination);
+        osc.start(at);
+        osc.stop(at + step);
+      });
+    } catch (e) {}
+  },
   confetti() {
     const colors = ['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF'];
     for (let i = 0; i < 30; i++) {

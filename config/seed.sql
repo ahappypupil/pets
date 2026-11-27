@@ -15,14 +15,14 @@ INSERT IGNORE INTO app_config (config_key, value_json, description) VALUES
 INSERT IGNORE INTO admin_user (username, password_hash, salt) VALUES
   ('admin', 'c2e71362baddb2bdb8e232eb96e264a9fb8595d5083b3034e3fff8a6fe7bbba5', 'petsalt0000000000000000000000001');
 
--- 默认孩子：宝贝，PIN=1234（salt 必须正好 32 位，CHAR(32) 会截断）
-INSERT IGNORE INTO child (name, avatar, pin_hash, salt, points_balance) VALUES
-  ('宝贝', 'cloud_beast', 'aafb27103e0b13c65556cf710e3a5a755cd8d9cb842a21a05f498fd93dee6b84', 'pinsalt0000000000000000000000000', 0);
+-- 默认孩子：宝贝，PIN=1234（显式 id=1，重跑 init_db 不会插入重复孩子）
+INSERT IGNORE INTO child (id, name, avatar, pin_hash, salt, points_balance) VALUES
+  (1, '宝贝', 'cloud_beast', 'aafb27103e0b13c65556cf710e3a5a755cd8d9cb842a21a05f498fd93dee6b84', 'pinsalt0000000000000000000000000', 0);
 
 -- 库存初始行（孩子 id=1）
 INSERT IGNORE INTO food_stock (child_id, milk, cookie) VALUES (1, 0, 0);
 
--- 五阶宠物链（配方与次数对应设计文档第 5.3 节）
+-- 初始宠物链；完整目录（含山海经新成员与档案）由 config/pets.json 同步
 INSERT IGNORE INTO pet_species (id, tier, name, egg_name, formula_milk, formula_cookie, feed_times, next_species_id, svg_key) VALUES
   (1, 1, '云团兽', '棉花蛋', 1, 1, 12, 2, 'cloud_beast'),
   (2, 2, '火苗狐', '暖焰蛋', 2, 1, 16, 3, 'ember_fox'),
@@ -30,9 +30,9 @@ INSERT IGNORE INTO pet_species (id, tier, name, egg_name, formula_milk, formula_
   (4, 4, '海雾鲸', '潮汐蛋', 3, 2, 24, 5, 'mist_whale'),
   (5, 5, '星辰龙', '星河蛋', 3, 3, 30, NULL, 'star_dragon');
 
--- 第一只宠物：云团兽的蛋（孩子 id=1）
-INSERT IGNORE INTO pet_instance (child_id, species_id, status, feed_count) VALUES (1, 1, 'egg', 0);
-UPDATE child SET current_pet_id = LAST_INSERT_ID() WHERE id = 1 AND current_pet_id IS NULL;
+-- 第一只宠物：云团兽的蛋（显式 id=1，重跑时不依赖 LAST_INSERT_ID，也不动已有当前宠物）
+INSERT IGNORE INTO pet_instance (id, child_id, species_id, status, feed_count) VALUES (1, 1, 1, 'egg', 0);
+UPDATE child SET current_pet_id = 1 WHERE id = 1 AND current_pet_id IS NULL;
 
 -- 默认奖项库（对应设计文档第 3.2 节）
 INSERT IGNORE INTO award (id, name, icon, points, daily_cap, need_approval, category, exclusive_group, enabled, source_type, sort_order) VALUES

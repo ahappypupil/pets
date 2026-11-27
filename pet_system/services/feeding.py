@@ -1,4 +1,7 @@
 """喂食服务：核心闭环。喂食、形态变化、毕业与新蛋在同一事务。"""
+import json
+import random
+
 from ..domain.rules import can_feed, apply_feed, next_species
 from ..domain.state import Ok, Err, PetStatus
 from ..db import transaction
@@ -31,10 +34,58 @@ def pet_view(child_id):
             "form": form,
             "formula_milk": state.species.formula_milk if state.species else 0,
             "formula_cookie": state.species.formula_cookie if state.species else 0,
+            "profile": (state.species.profile or {}) if state.species else {},
         } if state.pet else None,
         "chain": [{"id": s.id, "tier": s.tier, "name": s.name,
-                   "svg_key": s.svg_key} for s in chain],
+                   "svg_key": s.svg_key, "profile": s.profile or {}} for s in chain],
     }
+
+
+CHECKIN_FALLBACK = [
+    "完成今天的小任务，就回来点一下打卡吧！",
+    "今天也坚持了一点点，记得给自己打个卡。",
+    "打卡不是比赛，是给努力的自己点个赞。",
+]
+
+
+def say(child_id, kind="line", avoid=None):
+    """按 kind 说话：greeting 问候 / intro 自我介绍 / line 鼓励 / checkin 打卡。"""
+    with transaction() as cur:
+        state = store.load_state(cur, child_id)
+    if not state or not state.pet or not state.species:
+        return Err("NO_PET", "还没有宠物哦")
+    profile = state.species.profile or {}
+    name = state.species.name
+
+    if kind == "intro":
+        bits = [f"我是{name}！"]
+        if profile.get("hobby"):
+            bits.append(f"我喜欢{profile['hobby']}。")
+        if profile.get("habit"):
+            bits.append(f"我习惯{profile['habit']}。")
+        bits.append("今天也陪你一起加油！")
+        text = "".join(bits)
+    else:
+        if kind == "greeting":
+            pool = profile.get("greetings") or []
+        elif kind == "line":
+            pool = profile.get("lines") or []
+        elif kind == "checkin":
+            pool = profile.get("checkins") or CHECKIN_FALLBACK
+        else:
+            return Err("BAD_KIND", "不知道想让我说什么呀")
+        if not pool:
+            return Err("NO_LINES", "这位朋友还没学会说话呢")
+        choices = [x for x in pool if x != avoid] or pool
+        text = random.choice(choices)
+
+    return Ok({
+        "text": text,
+        "voice": profile.get("voice") or {},
+        "motion": profile.get("motion") or "float",
+        "name": name,
+        "kind": kind,
+    })
 
 
 def feed(child_id, request_id):
@@ -99,9 +150,20 @@ def feed(child_id, request_id):
 def codex(child_id):
     with transaction() as cur:
         cur.execute(
-            "SELECT c.species_id, s.name, s.tier, s.svg_key, c.first_graduated_at, "
-            "c.total_feedings, c.certificate_no "
+            "SELECT c.species_id, s.name, s.tier, s.svg_key, s.profile_json, "
+            "c.first_graduated_at, c.total_feedings, c.certificate_no "
             "FROM codex c JOIN pet_species s ON s.id=c.species_id "
             "WHERE c.child_id=%s ORDER BY s.tier", (child_id,)
         )
-        return cur.fetchall()
+        rows = []
+        for r in cur.fetchall():
+            raw = r.pop("profile_json", None)
+            if isinstance(raw, str) and raw:
+                try:
+                    r["profile"] = json.loads(raw)
+                except ValueError:
+                    r["profile"] = {}
+            else:
+                r["profile"] = raw or {}
+            rows.append(r)
+        return rows
